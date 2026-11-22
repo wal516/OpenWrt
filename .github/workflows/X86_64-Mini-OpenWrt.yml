@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
  # schedule:
  #   - cron: 0 19 * * *
-
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
@@ -22,6 +21,13 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Check disk space
+      if: always()
+      run: |
+        df -h
+        df -h /home/runner/work
+
+    
     - name: Checkout
       uses: actions/checkout@main
 
