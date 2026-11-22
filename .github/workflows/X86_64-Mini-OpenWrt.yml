@@ -21,13 +21,6 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Check disk space
-      if: always()
-      run: |
-        df -h
-        df -h /home/runner/work
-
-    
     - name: Checkout
       uses: actions/checkout@main
 
@@ -132,7 +125,12 @@ jobs:
         echo "status=success" >> $GITHUB_OUTPUT
         echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
-
+    - name: Debug target/linux on failure
+      if: failure()
+      run: |
+        cd "$OPENWRT_PATH"
+        make -j1 V=sc target/linux/install 2>&1 | tail -n 150
+        
     - name: Check Space Usage
       if: (!cancelled())
       run: df -hT
